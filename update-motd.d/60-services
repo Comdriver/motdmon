@@ -1,0 +1,43 @@
+#!/bin/bash
+export TERM=xterm-256color
+#printf "\n"
+printf "$(tput setaf 86)" #main text color
+
+#list of services
+declare -a services=(
+"smbd"
+"deluged"
+"deluge-web"
+"nutd"
+"sshd"
+"zabbix-agent"
+"fail2ban"
+)
+declare -a serviceName=(
+"Samba"
+"Deluge"
+"Deluge WEB"
+"NUT (UPS)"
+"SSH"
+"Monitoring"
+"F2Ban"
+)
+
+printf "  "
+len=0
+for i in ${!services[@]}
+do
+ printf "%-13s" "${serviceName[$i]}:"
+ if [[ $(systemctl is-active "${services[$i]}.service") = "active" ]]
+  then printf "%6s" "[$(tput setaf 2)o$(tput setaf 86)]   "
+ else printf "%6s" "[$(tput setaf 202)x$(tput setaf 86)]   "
+ fi
+ len=$(($len + 1))
+ if [[ $len -ge 4 ]] #4 is total services in row
+  then printf "\n  "
+       len=0
+ fi
+#printf "$services[$i] $(systemctl is-active ${services[$i]}.service)\n"
+done
+printf "\n"
+printf "$(tput sgr0)" #reset color

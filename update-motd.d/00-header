@@ -1,0 +1,66 @@
+#!/bin/sh
+#
+#    00-header - create the header of the MOTD
+#    Copyright (C) 2009-2010 Canonical Ltd.
+#
+#    Authors: Dustin Kirkland <kirkland@canonical.com>
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+[ -r /etc/lsb-release ] && . /etc/lsb-release
+
+if [ -z "$DISTRIB_DESCRIPTION" ] && [ -x /usr/bin/lsb_release ]; then
+	# Fall back to using the very slow lsb_release utility
+	DISTRIB_DESCRIPTION=$(lsb_release -s -d)
+fi
+export TERM=xterm-256color
+clear
+#printf "%b\n' '\033[2J\033[:H"
+printf "$(tput setaf 202)" #zodcode color
+#printf "\n"
+#printf " ███████╗ ██████╗ ██████╗  ██████╗ ██████╗ ██████╗ ███████╗\n"
+#printf " ╚══███╔╝██╔═══██╗██╔══██╗██╔════╝██╔═══██╗██╔══██╗██╔════╝\n"
+#printf "   ███╔╝ ██║   ██║██║  ██║██║     ██║   ██║██║  ██║█████╗\n"
+#printf "  ███╔╝  ██║   ██║██║  ██║██║     ██║   ██║██║  ██║██╔══╝\n"
+#printf " ███████╗╚██████╔╝██████╔╝╚██████╗╚██████╔╝██████╔╝███████╗\n"
+#printf " ╚══════╝ ╚═════╝ ╚═════╝  ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝\n"
+
+printf "     _____   ____   ____   ______ ____   ____   ______        ___  _  ___  \n"
+printf "    /__  /  / __ \ / __ \ / ____// __ \ / __ \ / ____/       / _/ / \ \_ \ \n"
+printf "      / /  / / / // / / // /    / / / // / / // __/         / /   | |   \ \ \n"
+printf "     / /__/ /_/ // /_/ // /___ / /_/ // /_/ // /___         \ \_  | |  _/ /\n"
+printf "    /____/\____//_____/ \_____ \____//_____//_____/          \__\ \_/ /__/ \n"
+
+printf "$(tput setaf 34)" #electronics color
+#printf "               __            __                    __\n"
+#printf "        .-----|  .-----.----|  |_.----.-----.-----|__.----.-----.\n"
+#printf "        |  -__|  |  -__|  __|   _|   _|  _  |     |  |  __|__ --|\n"
+#printf "        |_____|__|_____|____|____|__| |_____|__|__|__|____|_____|\n"
+
+printf "          ___  / /__  _____/ /__________  ____  (_)_________\n"
+printf "         / _ \/ / _ \/ ___/ __/ ___/ __ \/ __ \/ / ___/ ___/\n"
+printf "        /  __/ /  __/ /__/ /_/ /  / /_/ / / / / / /__(__  ) \n"
+printf "        \___/_/\___/\___/\__/_/   \____/_/ /_/_/\___/____/  \n"
+
+printf "$(tput setaf 255)" #main text color
+printf "\n"
+printf "Unit "
+printf "$(tput setaf 222)" #hostname color
+printf "$(hostname)"
+printf "$(tput setaf 255)" #back to main text color
+printf " is running on "
+#printf "%s (%s %s %s)\n" "$DISTRIB_DESCRIPTION" "$(uname -r)" "$(uname -m)"
+printf "$DISTRIB_DESCRIPTION $(uname -r) $(uname -m)\n"
+printf "$(tput sgr0)" #reset color

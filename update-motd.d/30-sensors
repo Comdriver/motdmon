@@ -1,0 +1,77 @@
+#!/bin/bash
+#
+#    10-help-text - print the help text associated with the distro
+#    Copyright (C) 2009-2010 Canonical Ltd.
+#
+#    Authors: Dustin Kirkland <kirkland@canonical.com>,
+#             Brian Murray <brian@canonical.com>
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+#temp color function
+temp () {
+sdx=$1
+sdx="${sdx//°C}"
+sdx="${sdx//+}"
+sdx="${sdx%.*}"
+if [[ "$sdx" -lt "35" ]]
+ then printf "[+$(tput setaf 2)$sdx$(tput setaf 86)°C]"
+elif [[ "$sdx" -lt "45" ]]
+ then printf "[+$(tput setaf 192)$sdx$(tput setaf 86)°C]"
+elif [[ "$sdx" -lt "60" ]]
+ then printf "[+$(tput setaf 178)$sdx$(tput setaf 86)°C]"
+else
+ printf "[+$(tput setaf 202)$sdx$(tput setaf 86)°C]"
+fi
+}
+
+export TERM=xterm-256color
+#printf "\n"
+printf "$(tput setaf 86)" #main text color
+
+#sensors !!!! MB SENSITIVE !!!! lm_sensors have to be installed
+printf "  "
+sdx=$(sensors |grep "CPU" | awk {'print $3'})
+cpu=$(echo "$sdx" | awk {'print $1'})
+printf "CPU $(temp $cpu) "
+cpu=$(echo "$sdx" | tail -n1)
+printf "PCI $(temp $cpu) "
+sdx=$(sensors |grep "MB Temp" | awk {'print $3'})
+printf "BRD $(temp $sdx) "
+sdx=$(sensors |grep "RAM" | awk {'print $3'})
+for mem in $sdx
+ do
+  printf "MEM $(temp $mem) "
+done
+sdx=$(sensors |grep "Fan" | awk {'print $3'})
+printf "FAN [$(tput setaf 2)$sdx$(tput setaf 86) RPM]"
+printf "\n  "
+
+#hdd temp
+sdx=$(hddtemp -n /dev/sda)
+printf "SDA $(temp $sdx) "
+sdx=$(hddtemp -n /dev/sdb)
+printf "SDB $(temp $sdx) "
+sdx=$(hddtemp -n /dev/sdc)
+printf "SDC $(temp $sdx) "
+sdx=$(hddtemp -n /dev/sdd)
+printf "SDD $(temp $sdx) "
+sdx=$(hddtemp -n /dev/sde)
+printf "SDE $(temp $sdx) "
+sdx=$(hddtemp -n /dev/sdf)
+printf "SDF $(temp $sdx) "
+printf "\n"
+
+printf "$(tput sgr0)" #reset color

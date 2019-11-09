@@ -1,0 +1,7 @@
+#!/bin/bash
+export TERM=xterm-256color
+#printf "\n"
+printf "$(tput setaf 86)" #main text color
+
+
+printf "$(tput sgr0)" #reset color

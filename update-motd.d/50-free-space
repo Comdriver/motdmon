@@ -1,0 +1,51 @@
+#!/bin/bash
+
+bar () { #this will print the bar
+membar=$(($1/2))
+printf "$(tput setaf 86)["
+
+#bar color depending of free space
+if [[ "$1" -lt "50" ]];
+ then  printf "$(tput setaf 2)"
+elif [[ "$1" -lt "70" ]];
+ then printf "$(tput setaf 190)"
+elif  [[ "$1" -lt "90" ]];
+ then printf "$(tput setaf 178)"
+else printf "$(tput setaf 202)"
+fi
+
+for i in $(seq 1 $membar)
+ do
+  printf "="
+done
+membar=$((50-$membar))
+printf "$(tput setaf 240)"
+for i in $(seq 1 $membar)
+ do
+  printf "="
+done
+printf "$(tput setaf 86)]"
+}
+declare -a paths=(
+"/"
+"/backupfs"
+)
+
+
+export TERM=xterm-256color
+#printf "\n"
+printf "$(tput setaf 86)" #main text color
+
+for i in ${!paths[@]}
+do
+ pused=$(df -h ${paths[$i]} | sed -n '2p' | awk {'print $3'})
+ pperc=$(df -h ${paths[$i]} | sed -n '2p' | awk {'print $5'})
+ ptota=$(df -h ${paths[$i]} | sed -n '2p' | awk {'print $2'})
+ pfree=$(df -h ${paths[$i]} | sed -n '2p' | awk {'print $4'})
+ printf "  %-25s%27s\n" "${paths[$i]}" "$pfree free"
+ pperc="${pperc//%}"
+ printf "  $(bar $pperc) $pperc%% of $ptota\n"
+done
+
+
+printf "$(tput sgr0)" #reset color
